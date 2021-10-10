@@ -34,3 +34,7 @@ Currently requires manual deletion under inventories table in your database.
 # Misc
 
 Read the config carefully with all the notes. There should not be any confusion.
+
+Author JackDaniels#0001
+
+Support Discord https://discord.gg/aVxjeR3bGC
