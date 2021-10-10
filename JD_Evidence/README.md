@@ -4,31 +4,33 @@
 # Dependencies
 - mysql-async
 - es_extended (Tested on v1 final)
+- zf_context
+- zf_dialog
 
 ## UPDATE
 
-Huge thanks to ModFreakz who literally re-wrote the entire thing. So this isn't even really my resource anymore. Huge shoutout to ModFreakz for helping to teach me what each of his changes actually meant.
+Huge thanks to Mr Bluffz#0001 who literally coached me through the entire thing. and for helping to teach me what each of the changes actually meant.
 
-I have also added some more locales for language, added more notification systems into the config, and made it easier to "customize" your own notification system if it's not already in the config. Interact Distance is now in config, instead of being hard coded in. Max Slots/Max Weight can now be set in the config instead of being hard coded as well.
+There will be more updates to come in the future!.
 
 
 # Instructions
 Drag and drop to your resources folder
 
-add to your server.cfg `ensure BluffzJobVault`.
+add to your server.cfg `ensure JD_Evidence`.
 
-add `vault_storage = "Vault"` to your mf-inventory locales. You can change Vault to anything you want for your language. It is what will be displayed.
+event trigger - 'JD_Evidence:triggerEvidenceMenu'
 
-## Adding new vaults with inventory
+add `evidence = "Evidence"` to your mf-inventory locales. You can change Vault to anything you want for your language. It is what will be displayed.
 
-This resource will automatically create the inventory in your database. All you need to do is add a new vault to your config, and restart the resource or your server.
+## Adding new evidence lockers with inventory
+
+This resource will automatically create the inventory in your database. All you need to do is add the trigger into esx_policejob or any script of your choosing to open the evidence menus then enter your desired case # and confirm its creation if needed.
 
 ## Deleting existing vaults
 
-Remove the vault from the config, then go into your database and manually delete the inventory there.
+Currently requires manual deletion under inventories table in your database.
 
 # Misc
-
-You can add as many vaults to your config as you would like. Make sure they follow the exact same format. If you want it to be an open locker, you can delete the ReqJobs section and it should still work. Make sure they don't have the same name, or else you will break the script.
 
 Read the config carefully with all the notes. There should not be any confusion.
