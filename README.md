@@ -27,7 +27,7 @@ add `evidence = "Evidence"` to your mf-inventory locales. You can change Vault t
 
 This resource will automatically create the inventory in your database. All you need to do is add the trigger into esx_policejob or any script of your choosing to open the evidence menus then enter your desired case # and confirm its creation if needed.
 
-## Deleting existing vaults
+## Deleting existing lockers
 
 Currently requires manual deletion under inventories table in your database.
 
