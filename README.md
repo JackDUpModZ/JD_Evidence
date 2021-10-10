@@ -35,6 +35,8 @@ Currently requires manual deletion under inventories table in your database.
 
 Read the config carefully with all the notes. There should not be any confusion.
 
+Please do not claim this script as your own or attempt to sell this is open source so anyone can use it. If you have any suggestions or feature requests please contact me directly and i will be glad to help!
+
 Author JackDaniels#0001
 
 Support Discord https://discord.gg/aVxjeR3bGC
