@@ -57,7 +57,7 @@ end
 RegisterNetEvent('JD_Evidence:confirmorcancel')
 AddEventHandler('JD_Evidence:confirmorcancel', function(args)
 	if args.selection == "confirm" then
-		local inventoryID = "evidence_"..args.inventory..""
+		local inventoryID = args.inventory
 		TriggerServerEvent("JD_Evidence:createInventory", inventoryID)
 		Wait(1000)
 		exports["mf-inventory"]:openOtherInventory(inventoryID)
@@ -80,7 +80,7 @@ AddEventHandler('JD_Evidence:triggerEvidenceMenu', function()
         if dialog[1].input == nil then
             ESX.ShowNotification('Invalid Entry Made')
         else
-			local inventoryID = (dialog[1].input)
+			local inventoryID = ("evidence_"..dialog[1].input.."")
 			TriggerEvent('JD_Evidence:callbackEvent',inventoryID)
         end
     end
