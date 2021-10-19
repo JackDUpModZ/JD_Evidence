@@ -29,6 +29,11 @@ ESX.RegisterServerCallback('JD_Evidence:getInventory', function(source, cb, inve
     end
 end)
 
+RegisterNetEvent('JD_Evidence:deleteEvidence')
+AddEventHandler('JD_Evidence:deleteEvidence', function(inventoryID)
+  exports["mf-inventory"]:deleteInventory(inventoryID)  -- Deletes the inventoryID from the DataBase!
+end)
+
 Citizen.CreateThread( function()
 	updatePath = "/JackDUpModZ/JD_Evidence" -- your git user/repo path
 	resourceName = "JD_Evidence ("..GetCurrentResourceName()..")" -- the resource name
