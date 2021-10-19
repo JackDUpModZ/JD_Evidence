@@ -6,6 +6,8 @@ TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 RegisterNetEvent('JD_Evidence:createInventory')
 AddEventHandler('JD_Evidence:createInventory', function(inventoryID)
   print(string.format("creating new inventory for identifier '%s'",inventoryID))
+  local xPlayer = ESX.GetPlayerFromId(source)    -- Defines xPlayer For the next step
+  local name = xPlayer.getName()                 -- Uses xPlayer to find Name And Send it in Webhook!
     -- Server side, called once for creation:
 
   local uniqueIdentifier = inventoryID    -- Unique identifier for this inventory.
@@ -18,6 +20,7 @@ AddEventHandler('JD_Evidence:createInventory', function(inventoryID)
   })
 
   exports["mf-inventory"]:createInventory(uniqueIdentifier,inventoryType,inventorySubType,inventoryLabel,maxWeight,maxSlots,items)
+  sendCreateDiscord(source, name, "Created Evidence",inventoryID)  -- Sends the Webhook
 end)
 
 ESX.RegisterServerCallback('JD_Evidence:getInventory', function(source, cb, inventoryID)
@@ -28,6 +31,52 @@ ESX.RegisterServerCallback('JD_Evidence:getInventory', function(source, cb, inve
       cb(false)
     end
 end)
+
+RegisterNetEvent('JD_Evidence:deleteEvidence')
+AddEventHandler('JD_Evidence:deleteEvidence', function(inventoryID)
+  local xPlayer = ESX.GetPlayerFromId(source)
+  local name = xPlayer.getName()
+  exports["mf-inventory"]:deleteInventory(inventoryID)  -- Deletes the inventoryID from the DataBase!
+  sendDeleteDiscord(source, name, "Deleted Evidence",inventoryID)  -- Sends the Webhook
+end)
+
+sendDeleteDiscord = function(color, name, message, footer)
+  local embed = {
+        {
+            ["color"] = 3085967,              -- Color for Embed
+            ["title"] = "**".. name .."**",   -- The Name of the Person
+            ["description"] = message,        -- Action (I.E. Create/Delete)
+            ["footer"] = {
+                ["text"] = footer,            -- personal info for you! (goes off below info!)
+            },
+            ["author"] = {
+              ["name"] = 'Made by | SickJuggalo666',            -- change this or leave it up to you!
+              ['icon_url'] = 'https://i.imgur.com/arJnggZ.png'  -- Change this to your city logo or personal logo!
+            }
+        }
+    }
+
+  PerformHttpRequest(Config.Discord_url, function(err, text, headers) end, 'POST', json.encode({username = name, embeds = embed}), { ['Content-Type'] = 'application/json' })
+end
+
+sendCreateDiscord = function(color, name, message, footer)
+  local embed = {
+        {
+            ["color"] = 3085967,
+            ["title"] = "**".. name .."**",
+            ["description"] = message,
+            ["footer"] = {
+                ["text"] = footer,
+            },
+            ["author"] = {
+              ["name"] = 'Made by | SickJuggalo666',
+              ['icon_url'] = 'https://i.imgur.com/arJnggZ.png'
+            }
+        }
+    }
+
+  PerformHttpRequest(Config.Discord_url, function(err, text, headers) end, 'POST', json.encode({username = name, embeds = embed}), { ['Content-Type'] = 'application/json' })
+end
 
 Citizen.CreateThread( function()
 	updatePath = "/JackDUpModZ/JD_Evidence" -- your git user/repo path

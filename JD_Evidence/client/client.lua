@@ -13,10 +13,7 @@ Citizen.CreateThread(function()
 	ESX.PlayerData = ESX.GetPlayerData()
 end)
 
-RegisterNetEvent('JD_Evidence:inventoryOpen')
-AddEventHandler('JD_Evidence:inventoryOpen', function(inventoryID)
-	exports["mf-inventory"]:openOtherInventory(inventoryID)
-end)
+ -- Removed Event to Open Inventory 
 
 function confirmCreate(inventoryID)
 	local confirmCreate = {
@@ -90,9 +87,57 @@ RegisterNetEvent('JD_Evidence:callbackEvent')
 AddEventHandler('JD_Evidence:callbackEvent', function(inventoryID)
 	ESX.TriggerServerCallback('JD_Evidence:getInventory', function(exists)
 		if exists then
-			confirmCreate(inventoryID)
+			confirmCreate(inventoryID) -- Creates the Evidence
 		else
-			exports["mf-inventory"]:openOtherInventory(inventoryID)
+			evidenceOption(inventoryID) -- If Evidence is Created it will Open Another Menu!
 		end
 	end, inventoryID)
+end)
+
+function evidenceOption(inventoryID)
+	local evidenceOption = {
+		{
+            id = 1,
+            header = 'Evidence Options',
+            txt = 'Evidence Delete/Open'
+        },
+		{
+			id = 2,
+			header = 'Delete Inventory?',
+			txt = 'delete',
+			params = {
+				event = 'JD_Evidence:evidenceOptions',
+				args = {
+					selection = "delete",
+					inventory = inventoryID
+				}
+			}
+		},
+		{
+			id = 3,
+			header = 'Open Evidence?',
+			txt = 'Open Evidence',
+			params = {
+				event = 'JD_Evidence:evidenceOptions',
+				args = {
+					selection = "open",
+					inventory = inventoryID
+				}
+			}
+		}
+	}
+
+	exports['zf_context']:openMenu(evidenceOption)
+	
+end
+
+RegisterNetEvent('JD_Evidence:evidenceOptions')
+AddEventHandler('JD_Evidence:evidenceOptions', function(args)
+	if args.selection == "delete" then   -- Will now Delete inventoryID from the DataBase!
+		local inventoryID = args.inventory
+		TriggerServerEvent("JD_Evidence:deleteEvidence", inventoryID)
+	elseif args.selection == "open" then -- Moved the Open event here for a better lay out!
+		local inventoryID = args.inventory
+		exports["mf-inventory"]:openOtherInventory(inventoryID)
+	end
 end)
