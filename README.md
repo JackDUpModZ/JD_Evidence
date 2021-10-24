@@ -19,9 +19,10 @@ Drag and drop to your resources folder
 
 add to your server.cfg `ensure JD_Evidence`.
 
-event trigger - 'JD_Evidence:triggerEvidenceMenu'
+Add `exports['JD_Evidence']:openInventory()` to any script where you want to access the lockers or evidence.
 
 add `evidence = "Evidence"` to your mf-inventory locales. You can change Vault to anything you want for your language. It is what will be displayed.
+add `leo = "Officer"` to mf-inventory locales. change Officer to anything you would like
 
 ## Adding new evidence lockers with inventory
 
@@ -29,11 +30,13 @@ This resource will automatically create the inventory in your database. All you 
 
 ## Deleting existing lockers
 
-Currently requires manual deletion under inventories table in your database.
+Is now an option in the menus when select them. lockers are able to be deleted as well!!
 
 # Misc
 
 Read the config carefully with all the notes. There should not be any confusion.
+
+Webhooks are added to monitor creation and deletion of lockers and evidence. Also easier for Owners and Admins to find certain lockers when needed!
 
 Please do not claim this script as your own or attempt to sell this is open source so anyone can use it. If you have any suggestions or feature requests please contact me directly and i will be glad to help!
 
