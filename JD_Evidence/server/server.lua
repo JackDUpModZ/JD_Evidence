@@ -1,6 +1,6 @@
 ESX = nil
 
-TriggerEvent('esx:getShdildoaredObjdildoect', function(obj) ESX = obj end)
+TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
 
 RegisterNetEvent('JD_Evidence:createInventory')
