@@ -20,7 +20,7 @@ function openInventory()
 			header = 'Open Locker',
 			txt = 'Open Locker Room',
 			params = {
-				event = 'JD_Evidence:triggerLockerMenu',
+				event = 'JD_Evidence:lockerCallbackEvent',
 			}
 		},
 		{
@@ -84,11 +84,11 @@ end)
 RegisterNetEvent('JD_Evidence:triggerEvidenceMenu')
 AddEventHandler('JD_Evidence:triggerEvidenceMenu', function()
       local dialog = exports['zf_dialog']:DialogInput({
-        header = "LSCSO Evidence", 
+        header = "LSPD Evidence", 
         rows = {
             {
                 id = 0, 
-                txt = "Evidence Case ID (#)"
+                txt = "Incident Number (#...)"
             },
         }
     })
@@ -97,7 +97,7 @@ AddEventHandler('JD_Evidence:triggerEvidenceMenu', function()
         if dialog[1].input == nil then
             ESX.ShowNotification('Invalid Entry Made')
         else
-			local inventoryID = ("evidence_"..dialog[1].input.."")
+			local inventoryID = ("Case#" ..dialog[1].input.."")
 			TriggerEvent('JD_Evidence:callbackEvent',inventoryID)
         end
     end
@@ -212,13 +212,13 @@ AddEventHandler('JD_Evidence:confirmLocker', function(args)
 	end
 end)
 
-RegisterNetEvent('JD_Evidence:triggerLockerMenu')
+--[[RegisterNetEvent('JD_Evidence:triggerLockerMenu')
 AddEventHandler('JD_Evidence:triggerLockerMenu', function()
       local dialog = exports['zf_dialog']:DialogInput({
         header = "LEO Locker", 
         rows = {
             {
-                id = 0, 
+                id = 0, 							--- sorry i want to leave this for now as i feel i will be using it or something close to it in the near future!
                 txt = "Enter Name"
             },
         }
@@ -232,18 +232,7 @@ AddEventHandler('JD_Evidence:triggerLockerMenu', function()
 			TriggerEvent('JD_Evidence:lockerCallbackEvent',lockerID)
         end
     end
-end)
-
-RegisterNetEvent('JD_Evidence:lockerCallbackEvent')
-AddEventHandler('JD_Evidence:lockerCallbackEvent', function(lockerID)
-	ESX.TriggerServerCallback('JD_Evidence:getLocker', function(exists)
-		if exists then
-			lockerCreate(lockerID)
-		else
-			lockerOption(lockerID)
-		end
-	end, lockerID)
-end)
+end)]]
 
 function lockerOption(lockerID)
 	local lockerOption = {
@@ -292,4 +281,24 @@ AddEventHandler('JD_Evidence:lockerOptions', function(args)
 		local lockerID = args.inventory
 		exports["mf-inventory"]:openOtherInventory(lockerID)
 	end
+end)
+
+RegisterNetEvent('JD_Evidence:lockerCallbackEvent')  --- LEGIT only way i could get it to work! 
+AddEventHandler('JD_Evidence:lockerCallbackEvent', function(lockerID)
+    ESX.TriggerServerCallback('JD_Evidence:getPlayerName', function(data)  -- Checks DB for Players Name
+        if data ~= nil then
+			local lockerID = ("LEO:"..data.firstname.." "..data.lastname)
+			ESX.TriggerServerCallback('JD_Evidence:getLocker', function(lockerID) -- checks to see if (LEO:.....) is already created
+				if lockerID then -- if its `not lockerID` it will never find it correctly! must leave it like this. i know.. ugly but should find a better way i hope soon!!!
+					local lockerID = ("LEO:"..data.firstname.." "..data.lastname) -- lay out would be `LEO:Jack Napier!!
+					lockerCreate(lockerID)
+				else
+					local lockerID = ("LEO:"..data.firstname.." "..data.lastname) -- lay out would be `LEO:Jack Napier!!
+					lockerOption(lockerID)
+				end
+			end,lockerID)
+		else
+            ESX.ShowNotification("Info can\'t be found!")
+        end
+    end,data)
 end)

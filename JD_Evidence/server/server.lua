@@ -117,3 +117,20 @@ sendCreateDiscord = function(color, name, message, footer)
 
   PerformHttpRequest(Config.Discord_url, function(err, text, headers) end, 'POST', json.encode({username = name, embeds = embed}), { ['Content-Type'] = 'application/json' })
 end
+
+ESX.RegisterServerCallback('JD_Evidence:getPlayerName', function(source,cb)
+  local xPlayer = ESX.GetPlayerFromId(source)
+  MySQL.Async.fetchAll('SELECT `firstname`,`lastname` FROM `users` WHERE `identifier` = @identifier',{
+      ['@identifier'] = xPlayer.identifier}, 
+    function(results)
+      if results[1] then
+        local data = {
+          firstname = results[1].firstname,
+          lastname  = results[1].lastname,
+        }
+        cb(data)
+      else
+        cb(nil)
+      end
+  end)
+end)

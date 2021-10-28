@@ -19,24 +19,31 @@ Drag and drop to your resources folder
 
 add to your server.cfg `ensure JD_Evidence`.
 
-Add `exports['JD_Evidence']:openInventory()` to any script where you want to access the lockers or evidence.
-
 add `evidence = "Evidence"` to your mf-inventory locales. You can change Vault to anything you want for your language. It is what will be displayed.
-add `leo = "Officer"` to mf-inventory locales. change Officer to anything you would like
 
 ## Adding new evidence lockers with inventory
 
 This resource will automatically create the inventory in your database. All you need to do is add the trigger into esx_policejob or any script of your choosing to open the evidence menus then enter your desired case # and confirm its creation if needed.
 
-## Deleting existing lockers
 
+-- SickJuggalo666#9786
+
+## Deleting existing lockers 
 Is now an option in the menus when select them. lockers are able to be deleted as well!!
+
+Personal Police Lockers are now found and created based on xPlayer First and Last name! 
+Add `exports['JD_Evidence']:openInventory()` to any script where you want to access the lockers or evidence.
+Webhooks are added to monitor creation and deletion of lockers and evidence. Also easier for Owners and Admins to find certain lockers when needed!
+
+Video ShowCase: https://streamable.com/0q84bp 
+
+Thank You JackDaniels#0001 for letting me contribute! I love the Challenges and Hope this script can be AMAZING!!! 
+
+-- SickJuggalo666#9786
 
 # Misc
 
 Read the config carefully with all the notes. There should not be any confusion.
-
-Webhooks are added to monitor creation and deletion of lockers and evidence. Also easier for Owners and Admins to find certain lockers when needed!
 
 Please do not claim this script as your own or attempt to sell this is open source so anyone can use it. If you have any suggestions or feature requests please contact me directly and i will be glad to help!
 
