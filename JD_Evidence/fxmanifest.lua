@@ -23,4 +23,8 @@ server_scripts {
 	'server/server.lua'
 }
 
+exports {
+	'openInventory'
+}
+
 dependency 'es_extended'

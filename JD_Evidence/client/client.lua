@@ -13,7 +13,27 @@ Citizen.CreateThread(function()
 	ESX.PlayerData = ESX.GetPlayerData()
 end)
 
- -- Removed Event to Open Inventory 
+function openInventory()
+	local openInventory = {
+		{
+			id = 1,
+			header = 'Open Locker',
+			txt = 'Open Locker Room',
+			params = {
+				event = 'JD_Evidence:lockerCallbackEvent',
+			}
+		},
+		{
+			id = 2,
+			header = 'Open Evidence',
+			txt = 'Open Evidence Locker',
+			params = {
+				event = 'JD_Evidence:triggerEvidenceMenu'
+			}
+		}
+	}
+	exports['zf_context']:openMenu(openInventory)
+end
 
 function confirmCreate(inventoryID)
 	local confirmCreate = {
@@ -64,11 +84,11 @@ end)
 RegisterNetEvent('JD_Evidence:triggerEvidenceMenu')
 AddEventHandler('JD_Evidence:triggerEvidenceMenu', function()
       local dialog = exports['zf_dialog']:DialogInput({
-        header = "LSCSO Evidence", 
+        header = "LSPD Evidence", 
         rows = {
             {
                 id = 0, 
-                txt = "Evidence Case ID (#)"
+                txt = "Incident Number (#...)"
             },
         }
     })
@@ -77,7 +97,7 @@ AddEventHandler('JD_Evidence:triggerEvidenceMenu', function()
         if dialog[1].input == nil then
             ESX.ShowNotification('Invalid Entry Made')
         else
-			local inventoryID = ("evidence_"..dialog[1].input.."")
+			local inventoryID = ("Case#" ..dialog[1].input.."")
 			TriggerEvent('JD_Evidence:callbackEvent',inventoryID)
         end
     end
@@ -87,9 +107,9 @@ RegisterNetEvent('JD_Evidence:callbackEvent')
 AddEventHandler('JD_Evidence:callbackEvent', function(inventoryID)
 	ESX.TriggerServerCallback('JD_Evidence:getInventory', function(exists)
 		if exists then
-			confirmCreate(inventoryID) -- Creates the Evidence
+			confirmCreate(inventoryID)
 		else
-			evidenceOption(inventoryID) -- If Evidence is Created it will Open Another Menu!
+			evidenceOption(inventoryID)
 		end
 	end, inventoryID)
 end)
@@ -133,11 +153,152 @@ end
 
 RegisterNetEvent('JD_Evidence:evidenceOptions')
 AddEventHandler('JD_Evidence:evidenceOptions', function(args)
-	if args.selection == "delete" then   -- Will now Delete inventoryID from the DataBase!
+	if args.selection == "delete" then
 		local inventoryID = args.inventory
 		TriggerServerEvent("JD_Evidence:deleteEvidence", inventoryID)
-	elseif args.selection == "open" then -- Moved the Open event here for a better lay out!
+		ESX.ShowNotification("Deleted Evidence!")
+	elseif args.selection == "open" then
 		local inventoryID = args.inventory
 		exports["mf-inventory"]:openOtherInventory(inventoryID)
 	end
+end)
+
+----- LOCKER SYSTEM!!!!!!!!!!!!!!!!!!!!
+--\\//\\//\\//\\//\\//\\//\\//\\//\\---
+
+function lockerCreate(lockerID)
+	local lockerCreate = {
+		{
+            id = 1,
+            header = 'Create New Locker?',
+            txt = 'Locker Inventory System'
+        },
+		{
+			id = 2,
+			header = 'Confirm Creation?',
+			txt = 'confirm',
+			params = {
+				event = 'JD_Evidence:confirmLocker',
+				args = {
+					selection = "confirm",
+					inventory = lockerID
+				}
+			}
+		},
+		{
+			id = 3,
+			header = 'Cancel Creation?',
+			txt = 'cancel',
+			params = {
+				event = 'JD_Evidence:confirmLocker',
+				args = {
+					selection = "cancel"
+				}
+			}
+		}
+	}
+
+	exports['zf_context']:openMenu(lockerCreate)
+	
+end
+
+RegisterNetEvent('JD_Evidence:confirmLocker')
+AddEventHandler('JD_Evidence:confirmLocker', function(args)
+	if args.selection == "confirm" then
+		local lockerID = args.inventory
+		TriggerServerEvent("JD_Evidence:createLocker", lockerID)
+		Wait(1000)
+		exports["mf-inventory"]:openOtherInventory(lockerID)
+	end
+end)
+
+--[[RegisterNetEvent('JD_Evidence:triggerLockerMenu')
+AddEventHandler('JD_Evidence:triggerLockerMenu', function()
+      local dialog = exports['zf_dialog']:DialogInput({
+        header = "LEO Locker", 
+        rows = {
+            {
+                id = 0, 							--- sorry i want to leave this for now as i feel i will be using it or something close to it in the near future!
+                txt = "Enter Name"
+            },
+        }
+    })
+
+    if dialog ~= nil then
+        if dialog[1].input == nil then
+            ESX.ShowNotification('Invalid Entry Made')
+        else
+			local lockerID = ("LEO_"..dialog[1].input.."")
+			TriggerEvent('JD_Evidence:lockerCallbackEvent',lockerID)
+        end
+    end
+end)]]
+
+function lockerOption(lockerID)
+	local lockerOption = {
+		{
+            id = 1,
+            header = 'Locker Options',
+            txt = 'Locker Delete/Open'
+        },
+		{
+			id = 2,
+			header = 'Delete Locker?',
+			txt = 'Delete',
+			params = {
+				event = 'JD_Evidence:lockerOptions',
+				args = {
+					selection = "delete",
+					inventory = lockerID
+				}
+			}
+		},
+		{
+			id = 3,
+			header = 'Open Locker?',
+			txt = 'Open Locker',
+			params = {
+				event = 'JD_Evidence:lockerOptions',
+				args = {
+					selection = "open",
+					inventory = lockerID
+				}
+			}
+		}
+	}
+
+	exports['zf_context']:openMenu(lockerOption)
+	
+end
+
+RegisterNetEvent('JD_Evidence:lockerOptions')
+AddEventHandler('JD_Evidence:lockerOptions', function(args)
+	if args.selection == "delete" then
+		local lockerID = args.inventory
+		TriggerServerEvent("JD_Evidence:deleteLocker", lockerID)
+		ESX.ShowNotification("Deleted Locker!")
+	elseif args.selection == "open" then
+		local lockerID = args.inventory
+		exports["mf-inventory"]:openOtherInventory(lockerID)
+	end
+end)
+
+RegisterNetEvent('JD_Evidence:lockerCallbackEvent')  --- LEGIT only way i could get it to work! 
+AddEventHandler('JD_Evidence:lockerCallbackEvent', function(lockerID)
+    ESX.TriggerServerCallback('JD_Evidence:getPlayerName', function(data)  -- Checks DB for Players Name
+        if data ~= nil then
+			local lockerID = ("LEO:"..data.firstname.." "..data.lastname)
+			ESX.TriggerServerCallback('JD_Evidence:getLocker', function(lockerID) -- checks to see if (LEO:.....) is already created
+				if lockerID then -- if its `not lockerID` it will never find it correctly! must leave it like this. i know.. ugly but should find a better way i hope soon!!!
+					local lockerID = ("LEO:"..data.firstname.." "..data.lastname) -- lay out would be `LEO:Jack Napier!!
+					lockerCreate(lockerID)
+				else
+					local lockerID = ("LEO:"..data.firstname.." "..data.lastname) -- lay out would be `LEO:Jack Napier!!
+					lockerOption(lockerID)
+				end
+			end,lockerID)
+		else
+            ESX.ShowNotification("Info can\'t be found!")
+        end
+    end,data)
 end)
