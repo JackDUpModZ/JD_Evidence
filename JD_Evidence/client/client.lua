@@ -30,6 +30,14 @@ function openInventory()
 			params = {
 				event = 'JD_Evidence:triggerEvidenceMenu'
 			}
+		},
+		{
+			id = 3,
+			header = 'Chief Options',
+			txt = 'Chief ONLY!',
+			params = {
+				event = 'JD_Evidence:ChiefMenu'
+			}
 		}
 	}
 	exports['zf_context']:openMenu(openInventory)
@@ -97,7 +105,7 @@ AddEventHandler('JD_Evidence:triggerEvidenceMenu', function()
         if dialog[1].input == nil then
             ESX.ShowNotification('Invalid Entry Made')
         else
-			local inventoryID = ("Case#" ..dialog[1].input.."")
+			local inventoryID = ("case"..dialog[1].input.."")
 			TriggerEvent('JD_Evidence:callbackEvent',inventoryID)
         end
     end
@@ -212,28 +220,6 @@ AddEventHandler('JD_Evidence:confirmLocker', function(args)
 	end
 end)
 
---[[RegisterNetEvent('JD_Evidence:triggerLockerMenu')
-AddEventHandler('JD_Evidence:triggerLockerMenu', function()
-      local dialog = exports['zf_dialog']:DialogInput({
-        header = "LEO Locker", 
-        rows = {
-            {
-                id = 0, 							--- sorry i want to leave this for now as i feel i will be using it or something close to it in the near future!
-                txt = "Enter Name"
-            },
-        }
-    })
-
-    if dialog ~= nil then
-        if dialog[1].input == nil then
-            ESX.ShowNotification('Invalid Entry Made')
-        else
-			local lockerID = ("LEO_"..dialog[1].input.."")
-			TriggerEvent('JD_Evidence:lockerCallbackEvent',lockerID)
-        end
-    end
-end)]]
-
 function lockerOption(lockerID)
 	local lockerOption = {
 		{
@@ -283,17 +269,17 @@ AddEventHandler('JD_Evidence:lockerOptions', function(args)
 	end
 end)
 
-RegisterNetEvent('JD_Evidence:lockerCallbackEvent')  --- LEGIT only way i could get it to work! 
+RegisterNetEvent('JD_Evidence:lockerCallbackEvent')
 AddEventHandler('JD_Evidence:lockerCallbackEvent', function(lockerID)
-    ESX.TriggerServerCallback('JD_Evidence:getPlayerName', function(data)  -- Checks DB for Players Name
+    ESX.TriggerServerCallback('JD_Evidence:getPlayerName', function(data)
         if data ~= nil then
 			local lockerID = ("LEO:"..data.firstname.." "..data.lastname)
-			ESX.TriggerServerCallback('JD_Evidence:getLocker', function(lockerID) -- checks to see if (LEO:.....) is already created
-				if lockerID then -- if its `not lockerID` it will never find it correctly! must leave it like this. i know.. ugly but should find a better way i hope soon!!!
-					local lockerID = ("LEO:"..data.firstname.." "..data.lastname) -- lay out would be `LEO:Jack Napier!!
+			ESX.TriggerServerCallback('JD_Evidence:getLocker', function(lockerID)
+				if lockerID then
+					local lockerID = ("LEO:"..data.firstname.." "..data.lastname)
 					lockerCreate(lockerID)
 				else
-					local lockerID = ("LEO:"..data.firstname.." "..data.lastname) -- lay out would be `LEO:Jack Napier!!
+					local lockerID = ("LEO:"..data.firstname.." "..data.lastname)
 					lockerOption(lockerID)
 				end
 			end,lockerID)
@@ -301,4 +287,117 @@ AddEventHandler('JD_Evidence:lockerCallbackEvent', function(lockerID)
             ESX.ShowNotification("Info can\'t be found!")
         end
     end,data)
+end)
+
+
+--## CHIEF MENU!!!!!
+
+function refreshjob()
+    Citizen.Wait(1)
+    PlayerData = ESX.GetPlayerData()
+end
+
+RegisterNetEvent('JD_Evidence:ChiefMenu')
+AddEventHandler('JD_Evidence:ChiefMenu',function()
+	refreshjob()
+	if  PlayerData.job.grade_name == Config.Rank then
+		ChooseOption()
+	else
+		ESX.ShowNotification("You Do Not Have the Reguired Job!")
+	end
+end)
+
+function ChooseOption()
+	local chooseOption = {
+		{
+            id = 0,
+            header = 'Choose Option',
+            txt = 'Locker Delete/Open'
+        },
+		{
+			id = 1,
+			header = 'Open Locker',
+			txt = 'Open Personal Locker',
+			params = {
+				event = 'JD_Evidence:ChiefLookup',
+			}
+		},
+		{
+			id = 2,
+			header = 'Open Case?',
+			txt = 'Open Case Locker',
+			params = {
+				event = 'JD_Evidence:ChiefCaseMenu',
+			}
+		}
+	}
+
+	exports['zf_context']:openMenu(chooseOption)
+
+end
+
+RegisterNetEvent('JD_Evidence:ChiefLookup')
+AddEventHandler('JD_Evidence:ChiefLookup', function()
+      local dialog = exports['zf_dialog']:DialogInput({
+        header = "LEO Locker Check",
+        rows = {
+            {
+                id = 0,
+                txt = "Enter Name"
+            },
+        }
+    })
+
+	if dialog ~= nil then
+		if dialog[1].input == nil then
+			ESX.ShowNotification('Invalid Entry Made')
+		else
+			local lockerID = ("LEO:"..dialog[1].input.."")
+			TriggerEvent('JD_Evidence:ChiefLockerCheck',lockerID)
+		end	
+    end
+end)
+
+RegisterNetEvent('JD_Evidence:ChiefCaseMenu')
+AddEventHandler('JD_Evidence:ChiefCaseMenu', function()
+	local dialog = exports['zf_dialog']:DialogInput({
+	  header = "LSPD Cases",
+	  rows = {
+		  	{
+			  id = 0,
+			  txt = "Enter Case#"
+		  	},
+	  	}
+  	})
+
+  	if dialog ~= nil then
+	  	if dialog[1].input == nil then
+		  	ESX.ShowNotification('Invalid Entry Made')
+	  	else
+		  	local inventoryID = ("case"..dialog[1].input.."")
+		 	 TriggerEvent('JD_Evidence:ChiefInventory',inventoryID)	
+	  	end	
+  	end
+end)
+
+RegisterNetEvent('JD_Evidence:ChiefLockerCheck')
+AddEventHandler('JD_Evidence:ChiefLockerCheck',function(lockerID)
+	ESX.TriggerServerCallback('JD_Evidence:getLocker', function(exists)
+		if not exists then
+			lockerOption(lockerID)
+		else
+			ESX.ShowNotification(string.format('No Lockers with name:'..lockerID))	
+		end
+	end, lockerID)
+end)
+
+RegisterNetEvent('JD_Evidence:ChiefInventory')
+AddEventHandler('JD_Evidence:ChiefInventory',function(inventoryID)
+	ESX.TriggerServerCallback('JD_Evidence:getInventory', function(exists)
+		if not exists then
+			evidenceOption(inventoryID)
+		else
+			ESX.ShowNotification(string.format('No Lockers with name: '..inventoryID))
+		end
+	end, inventoryID)
 end)
