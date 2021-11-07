@@ -14,6 +14,40 @@ Citizen.CreateThread(function()
 end)
 
 function openInventory()
+
+	refreshjob()
+
+	local chiefOption = {
+		{
+            id = 1,
+            header = 'Locker Options',
+            txt = 'Locker Delete/Open'
+        },
+		{
+			id = 2,
+			header = 'Delete Locker?',
+			txt = 'Delete',
+			params = {
+				event = 'JD_Evidence:lockerOptions',
+				args = {
+					selection = "delete",
+					inventory = lockerID
+				}
+			}
+		},
+		{
+			id = 3,
+			header = 'Open Locker?',
+			txt = 'Open Locker',
+			params = {
+				event = 'JD_Evidence:lockerOptions',
+				args = {
+					selection = "open",
+					inventory = lockerID
+				}
+			}
+		}
+	}
 	local openInventory = {
 		{
 			id = 1,
@@ -40,7 +74,11 @@ function openInventory()
 			}
 		}
 	}
-	exports['zf_context']:openMenu(openInventory)
+	if  PlayerData.job.grade_name == Config.Rank then
+		exports['zf_context']:openMenu(chiefOption)
+	else
+		exports['zf_context']:openMenu(openInventory)
+	end
 end
 
 function confirmCreate(inventoryID)
@@ -252,9 +290,7 @@ function lockerOption(lockerID)
 			}
 		}
 	}
-
-	exports['zf_context']:openMenu(lockerOption)
-	
+		exports['zf_context']:openMenu(lockerOption)
 end
 
 RegisterNetEvent('JD_Evidence:lockerOptions')
@@ -299,12 +335,7 @@ end
 
 RegisterNetEvent('JD_Evidence:ChiefMenu')
 AddEventHandler('JD_Evidence:ChiefMenu',function()
-	refreshjob()
-	if  PlayerData.job.grade_name == Config.Rank then
-		ChooseOption()
-	else
-		ESX.ShowNotification("You Do Not Have the Reguired Job!")
-	end
+	ChooseOption()
 end)
 
 function ChooseOption()
