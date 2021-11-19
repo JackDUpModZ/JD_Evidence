@@ -2,6 +2,7 @@ ESX = nil
 
 TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
 
+Discord_url = ""
 
 RegisterNetEvent('JD_Evidence:createInventory')
 AddEventHandler('JD_Evidence:createInventory', function(inventoryID)
@@ -96,7 +97,7 @@ sendDeleteDiscord = function(color, name, message, footer)
         }
     }
 
-  PerformHttpRequest(Config.Discord_url, function(err, text, headers) end, 'POST', json.encode({username = name, embeds = embed}), { ['Content-Type'] = 'application/json' })
+  PerformHttpRequest(Discord_url, function(err, text, headers) end, 'POST', json.encode({username = name, embeds = embed}), { ['Content-Type'] = 'application/json' })
 end
 
 sendCreateDiscord = function(color, name, message, footer)
@@ -115,7 +116,7 @@ sendCreateDiscord = function(color, name, message, footer)
         }
     }
 
-  PerformHttpRequest(Config.Discord_url, function(err, text, headers) end, 'POST', json.encode({username = name, embeds = embed}), { ['Content-Type'] = 'application/json' })
+  PerformHttpRequest(Discord_url, function(err, text, headers) end, 'POST', json.encode({username = name, embeds = embed}), { ['Content-Type'] = 'application/json' })
 end
 
 ESX.RegisterServerCallback('JD_Evidence:getPlayerName', function(source,cb)
