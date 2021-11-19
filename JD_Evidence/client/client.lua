@@ -14,6 +14,33 @@ Citizen.CreateThread(function()
 end)
 
 function openInventory()
+	refreshjob()
+	local chiefmenu = {
+		{
+			id = 1,
+			header = 'Chief Options',
+			txt = 'Chief ONLY!',
+			params = {
+				event = 'JD_Evidence:ChiefMenu'
+			}
+		},
+		{
+			id = 2,
+			header = 'Open Locker',
+			txt = 'Open Locker Room',
+			params = {
+				event = 'JD_Evidence:lockerCallbackEvent',
+			}
+		},
+		{
+			id = 3,
+			header = 'Open Evidence',
+			txt = 'Open Evidence Locker',
+			params = {
+				event = 'JD_Evidence:triggerEvidenceMenu'
+			}
+		},
+	}
 	local openInventory = {
 		{
 			id = 1,
@@ -31,16 +58,11 @@ function openInventory()
 				event = 'JD_Evidence:triggerEvidenceMenu'
 			}
 		},
-		{
-			id = 3,
-			header = 'Chief Options',
-			txt = 'Chief ONLY!',
-			params = {
-				event = 'JD_Evidence:ChiefMenu'
-			}
-		}
 	}
-	exports['zf_context']:openMenu(openInventory)
+	if  PlayerData.job.grade_name == Config.Rank then
+		exports['zf_context']:openMenu(chiefmenu)
+	else 
+		exports['zf_context']:openMenu(openInventory)
 end
 
 function confirmCreate(inventoryID)
@@ -299,12 +321,7 @@ end
 
 RegisterNetEvent('JD_Evidence:ChiefMenu')
 AddEventHandler('JD_Evidence:ChiefMenu',function()
-	refreshjob()
-	if  PlayerData.job.grade_name == Config.Rank then
-		ChooseOption()
-	else
-		ESX.ShowNotification("You Do Not Have the Reguired Job!")
-	end
+	ChooseOption()
 end)
 
 function ChooseOption()
