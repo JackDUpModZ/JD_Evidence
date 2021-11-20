@@ -63,6 +63,7 @@ function openInventory()
 		exports['zf_context']:openMenu(chiefmenu)
 	else 
 		exports['zf_context']:openMenu(openInventory)
+	end
 end
 
 function confirmCreate(inventoryID)
