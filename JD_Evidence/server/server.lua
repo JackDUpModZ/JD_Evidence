@@ -56,7 +56,37 @@ AddEventHandler('JD_Evidence:createLocker', function(lockerID)
   local inventoryLabel = lockerID                           -- The inventorys UI label index (which will pull the translation value).
   local maxWeight = 5000.0                                           -- Max weight for the inventory.
   local maxSlots = 50                                               -- Max slots for the inventory.
-  local items = exports["mf-inventory"]:buildInventoryItems({       -- Construct table of valid items for the inventory from pre-existing ESX items table (OR a blank table/{}).
+  local items = exports["mf-inventory"]:buildInventoryItems({
+    {
+      name = 'weapon_combatpistol',
+      label = 'Combat Pistol',
+      count = 1
+    },
+    {
+      name = 'weapon_stungun',
+      label = 'Police Taser',
+      count = 1
+    },
+    {
+      name = 'weapon_flashlight',
+      label = 'Flashlight',
+      count = 1
+    },
+    {
+      name = 'water',
+      label = 'Water',
+      count = 50
+    },
+    {
+      name = 'bread',
+      label = 'Burger',
+      count = 50
+    },
+    {
+      name = 'kevlar',
+      label = 'Kevlar Armor',
+      count = 10
+    },
   })
 
   exports["mf-inventory"]:createInventory(uniqueIdentifier,inventoryType,inventorySubType,inventoryLabel,maxWeight,maxSlots,items)
